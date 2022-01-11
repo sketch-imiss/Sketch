@@ -13,18 +13,19 @@ def get_args():
     parser.add_argument('--output', default='results/result.out', type=str, help='output path')
 
     # cardinality estimation parameters
-    parser.add_argument('--card_size', default=100000, type=int, help='sketch size for cardinality estimation')
+    parser.add_argument('--csize', default=100000, type=int, help='sketch size for cardinality estimation')
+    parser.add_argument('--ctype', default='bit', type=str, help='type of each bucket in the sketch')
 
     # frequency estimation parameters
-    parser.add_argument('--filter_size', default=1000, type=int, help='filter size for frequency estimation')
-    parser.add_argument('--filter_threshold', default=10, type=int, help='filter threshold for frequency estimation')
-    parser.add_argument('--cm_row', default=100, type=int, help='the number of rows in cm-cu sketch')
-    parser.add_argument('--cm_column', default=100, type=int, help='the number of columns in cm-cu sketch')
+    parser.add_argument('--fsize', default=1000, type=int, help='filter size for frequency estimation')
+    parser.add_argument('--fthreshold', default=10, type=int, help='filter threshold for frequency estimation')
+    parser.add_argument('--frow', default=100, type=int, help='the number of rows in cm-cu sketch')
+    parser.add_argument('--fcolumn', default=100, type=int, help='the number of columns in cm-cu sketch')
 
     # persistency estimation parameters
-    parser.add_argument('--per_size', default=100000, type=int, help='sketch size for persistency estimation')
-    parser.add_argument('--timeslot', default=30, type=int, help='the size of each timeslot')
-    parser.add_argument('--reversible', default=0, type=int, help='whether the sketch is reversible or not')
+    parser.add_argument('--psize', default=100000, type=int, help='sketch size for persistency estimation')
+    parser.add_argument('--ptime', default=30, type=int, help='the size of each timeslot')
+    parser.add_argument('--preversible', default=0, type=int, help='whether the sketch is reversible or not')
 
     args = parser.parse_args()
     return args
@@ -33,7 +34,7 @@ def get_args():
 if __name__ == '__main__':
     args = get_args()
     if args.estimator == 'cardinaltiy':
-        estimator = Cardinality(args.dataset, args.card_size)
+        estimator = Cardinality(args.dataset, args.card_size, args.bucket_type)
         estimator.run()
     elif args.estimator == 'frequency':
         estimator = Frequency(args.dataset, args.filter_size, args.filter_threshold, args.cm_row, args.cm_column)
