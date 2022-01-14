@@ -2,6 +2,7 @@ import mmh3
 import pickle
 import time
 import math
+import logging
 
 
 class Cardinality:
@@ -71,3 +72,5 @@ class Cardinality:
             self.bit_estimator()
         elif self.bucket_type == 'register':
             self.register_estimator()
+        else:
+            logging.error('Please select the correct bucket type: bit/register')

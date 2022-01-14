@@ -17,10 +17,11 @@ def get_args():
     parser.add_argument('--ctype', default='bit', type=str, help='type of each bucket in the sketch')
 
     # frequency estimation parameters
-    parser.add_argument('--fsize', default=1000, type=int, help='filter size for frequency estimation')
+    parser.add_argument('--fsize', default=10000, type=int, help='filter size for frequency estimation')
     parser.add_argument('--fthreshold', default=10, type=int, help='filter threshold for frequency estimation')
-    parser.add_argument('--frow', default=100, type=int, help='the number of rows in cm-cu sketch')
-    parser.add_argument('--fcolumn', default=100, type=int, help='the number of columns in cm-cu sketch')
+    parser.add_argument('--fhash', default=3, type=int, help='the number of hash functions in the filter')
+    parser.add_argument('--frow', default=3, type=int, help='the number of rows in cm-cu sketch')
+    parser.add_argument('--fcolumn', default=10000, type=int, help='the number of columns in cm-cu sketch')
 
     # persistency estimation parameters
     parser.add_argument('--psize', default=100000, type=int, help='sketch size for persistency estimation')
@@ -38,7 +39,7 @@ if __name__ == '__main__':
         estimator = Cardinality(args.dataset, args.csize, args.ctype, args.output)
         estimator.run()
     elif args.estimator == 'frequency':
-        estimator = Frequency(args.dataset, args.fsize, args.fthreshold, args.frow, args.fcolumn, args.output)
+        estimator = Frequency(args.dataset, args.fsize, args.fthreshold, args.fhash, args.frow, args.fcolumn, args.output)
         estimator.run()
     elif args.estimator == 'persistency':
         estimator = Persistency(args.dataset, args.psize, args.ptime, args.preversible, args.output)
