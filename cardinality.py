@@ -1,6 +1,7 @@
 import mmh3
 import pickle
 import time
+import math
 
 
 class Cardinality:
@@ -11,7 +12,16 @@ class Cardinality:
         self.output = output
 
     def geometric_hash(self, input):
-        return input
+        bin_str = '0' * (32 - len(bin(input)[2:])) + bin(input)[2:]
+        b = math.ceil(math.log(self.sk_size) / math.log(2))
+        index = int(bin_str[0:b], 2) % self.sk_size
+        print(bin_str[b:])
+        value = 0
+        for bit in bin_str[b:]:
+            value += 1
+            if bit == '1':
+                break
+        return index, value
 
     def bit_estimator(self):
         sketch = [0] * self.sk_size
@@ -42,8 +52,14 @@ class Cardinality:
         with open(self.dataset) as reader:
             for line in reader:
                 [user, item] = list(map(int, line.strip().split()))
+                if user not in dict_cardinality:
+                    dict_cardinality[user] = 0
                 input = mmh3.hash(str(user) + '-' + str(item), signed=False)
                 index, value = self.geometric_hash(input)
+                if value > sketch[index]:
+                    dict_cardinality[user] += (1 / update_prob)
+                    update_prob += ((2 ** (-value) - 2 ** (-sketch[index])) / self.sk_size)
+                    sketch[index] = value
         reader.close()
 
         writer = open(self.output, 'wb')
