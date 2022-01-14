@@ -8,7 +8,7 @@ from persistency import Persistency
 
 def get_args():
     parser = argparse.ArgumentParser(description='a sketch library to fast estimating metrics over data streams')
-    parser.add_argument('--dataset', default='dataset/demo.dat', type=str, help='dataset path')
+    parser.add_argument('--dataset', default='dataset/cardinality.dat', type=str, help='dataset path')
     parser.add_argument('--estimator', default='cardinality', type=str, help='estimation task')
     parser.add_argument('--output', default='results/result.out', type=str, help='output path')
 
@@ -33,14 +33,15 @@ def get_args():
 
 if __name__ == '__main__':
     args = get_args()
-    if args.estimator == 'cardinaltiy':
-        estimator = Cardinality(args.dataset, args.card_size, args.bucket_type)
+    print(args.estimator)
+    if args.estimator == 'cardinality':
+        estimator = Cardinality(args.dataset, args.csize, args.ctype, args.output)
         estimator.run()
     elif args.estimator == 'frequency':
-        estimator = Frequency(args.dataset, args.filter_size, args.filter_threshold, args.cm_row, args.cm_column)
+        estimator = Frequency(args.dataset, args.fsize, args.fthreshold, args.frow, args.fcolumn, args.output)
         estimator.run()
     elif args.estimator == 'persistency':
-        estimator = Persistency(args.dataset, args.per_size, args.timeslot, args.reversible)
+        estimator = Persistency(args.dataset, args.psize, args.ptime, args.preversible, args.output)
         estimator.run()
     else:
         logging.error('Please select the correct estimation task: cardinality/frequency/persistency')
