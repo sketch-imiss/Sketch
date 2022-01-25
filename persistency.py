@@ -1,3 +1,6 @@
+import logging
+
+
 class Persistency:
     def __init__(self, dataset, sk_size, timeslot, reversible, output):
         self.dataset = dataset
@@ -6,5 +9,16 @@ class Persistency:
         self.reversible = reversible
         self.output = output
 
-    def run(self):
+    def bf_update(self):
         print(123)
+
+    def reversible_bf_update(self):
+        print(456)
+
+    def run(self):
+        if self.reversible == 0:
+            self.bf_update()
+        elif self.reversible == 1:
+            self.reversible_bf_update()
+        else:
+            logging.error('Please select the correct reversibility: 0 for bloom filter / 1 for reversible bloom filter')
