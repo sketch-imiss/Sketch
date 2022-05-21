@@ -1,4 +1,9 @@
 import logging
+import mmh3
+import random
+
+
+denominator = 2 ** 32 - 1
 
 
 class Sampler:
@@ -22,11 +27,25 @@ class Sampler:
             with open(self.dataset, 'r') as f:
                 for line in f:
                     [user, item] = list(map(int, line.strip().split()))
+                    random_num = mmh3.hash(str(user) + '-' + str(item), signed=False) / denominator
+                    if random_num < self.sprobability:
+                        sampled_dataset.append((user, item))
         # reservoir sampling
         elif self.sample == 2:
+            npair = 0
             with open(self.dataset, 'r') as f:
                 for line in f:
                     [user, item] = list(map(int, line.strip().split()))
+                    npair += 1
+                    if len(sampled_dataset) < self.ssize:
+                        sampled_dataset.append((user, item))
+                    else:
+                        random_num = mmh3.hash(str(user) + '-' + str(item), signed=False) / denominator
+                        if random_num < self.ssize / npair:
+                            random_index = random.randint(0, self.ssize+1)
+                            del sampled_dataset[random_index]
+                            sampled_dataset.append((user, item))
+            self.sprobability = self.ssize / npair
         # sample and hold
         elif self.sample == 3:
             logging.info('==> TO DO')

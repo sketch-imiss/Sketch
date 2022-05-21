@@ -30,6 +30,19 @@ The frequency of each user is defined as its number of occurrences.
 When dividing a long period into a set of timeslots without overlapping, the persistency of each user is defined as the 
 number of timeslots that it occurs at least once.
 
+### Sampling Strategy
+
+This repository supports three sampling strategies according to different estimation tasks:
+* Fixed-probability sampling
+* Reservoir sampling
+* Sample and hold
+
+### Partitioning Strategy
+
+This repository provides two partitioning strategies:
+* Random partitioning
+* Hashing partitioning
+
 ### Requirement
 * Python >= 3.9
 * Ray >= 1.12.1
