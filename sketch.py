@@ -7,14 +7,19 @@ from persistency import Persistency
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description='a sketch library to fast estimating metrics over data streams')
+    parser = argparse.ArgumentParser(description='a Python library for monitoring large-scale data streams')
     parser.add_argument('--dataset', default='dataset/cardinality.dat', type=str, help='dataset path')
-    parser.add_argument('--estimator', default='cardinality', type=str, help='estimation task')
+    parser.add_argument('--estimator', default=0, type=int, help='estimation task: 0-cardinality, 1-frequency, 2-persistency')
     parser.add_argument('--output', default='results/result.out', type=str, help='output path')
+
+    # sampling setting
+    parser.add_argument('--sample', default=0, type=int, help='sampling strategy: 0-fixed probability, 1-reservoir, 2-sample and hold')
+    parser.add_argument('--sample probability', type=float, help='sampling probability')
+    parser.add_argument('--sample size', type=int, help='sampling size')
 
     # cardinality estimation parameters
     parser.add_argument('--csize', default=100000, type=int, help='sketch size for cardinality estimation')
-    parser.add_argument('--ctype', default='bit', type=str, help='type of each bucket in the sketch')
+    parser.add_argument('--ctype', default=0, type=int, help='type of each bucket: 0-bit, 1-register')
 
     # frequency estimation parameters
     parser.add_argument('--fsize', default=10000, type=int, help='filter size for frequency estimation')
