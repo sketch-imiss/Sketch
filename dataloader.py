@@ -1,4 +1,5 @@
 from sampler import Sampler
+from partitioner import Partitioner
 
 
 class DataLoader:
@@ -11,13 +12,15 @@ class DataLoader:
         self.partition = partition
         self.pnodes = pnodes
 
-    def get_dataset(self):
+    def get_data(self):
         # sample a sub-dataset from the raw dataset
 
         sampler = Sampler(self.dataset, self.sample, self.sprobability, self.ssize)
         if self.estimator == 0:
-            sampler.cardinality_sample()
+            sampled_data = sampler.cardinality_sample()
         elif self.estimator == 1:
-            sampler.frequency_sample()
+            sampled_data = sampler.frequency_sample()
         elif self.estimator == 2:
-            sampler.persistency_sample()
+            sampled_data = sampler.persistency_sample()
+
+        partitioner = Partitioner(sampled_data, self.partition, self.pnodes)
