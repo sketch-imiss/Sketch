@@ -10,10 +10,10 @@ class Persistency:
         self.output = output
 
     def bf_update(self):
-        print(123)
+        print('==> TO DO')
 
     def reversible_bf_update(self):
-        print(456)
+        print('==> TO DO')
 
     def run(self):
         if self.reversible == 0:

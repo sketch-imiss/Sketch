@@ -49,19 +49,19 @@ def get_args():
 if __name__ == '__main__':
     args = get_args()
 
+    # data preprocessing: sampling and partitioning
     dataloader = DataLoader(args.dataset, args.estimator, args.sample, args.sprobability, args.ssize, args.partition, args.pnodes)
-    data = dataloader.get_data()
+    data, sprobability = dataloader.get_data()
 
-    print(args.estimator)
     if args.estimator == 0:
-        estimator = Cardinality(data, args.csize, args.ctype, args.output)
+        estimator = Cardinality(data, args.sample, sprobability, args.partition, args.csize, args.ctype, args.output)
         estimator.run()
-    elif args.estimator == 1:
-        estimator = Frequency(args.dataset, args.fsize, args.fthreshold, args.fhash, args.frow, args.fcolumn,
-                              args.output, args.fastupdate)
-        estimator.run()
-    elif args.estimator == 2:
-        estimator = Persistency(args.dataset, args.psize, args.ptime, args.preversible, args.output)
-        estimator.run()
-    else:
-        logging.error('Please select the correct estimation task: cardinality/frequency/persistency')
+    # elif args.estimator == 1:
+    #     estimator = Frequency(data, args.fsize, args.fthreshold, args.fhash, args.frow, args.fcolumn,
+    #                           args.output, args.fastupdate)
+    #     estimator.run()
+    # elif args.estimator == 2:
+    #     estimator = Persistency(data, args.psize, args.ptime, args.preversible, args.output)
+    #     estimator.run()
+    # else:
+    #     print('Please select the correct estimation task: cardinality/frequency/persistency')

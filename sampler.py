@@ -1,4 +1,3 @@
-import logging
 import mmh3
 import random
 
@@ -14,7 +13,7 @@ class Sampler:
         self.ssize = ssize
 
     def cardinality_sample(self):
-        sampled_data = []
+        sampled_data = list()
 
         # without sampling
         if self.sample == 0:
@@ -42,15 +41,15 @@ class Sampler:
                     else:
                         random_num = mmh3.hash(str(user) + '-' + str(item), signed=False) / denominator
                         if random_num < self.ssize / npair:
-                            random_index = random.randint(0, self.ssize+1)
+                            random_index = random.randint(0, self.ssize-1)
                             del sampled_data[random_index]
                             sampled_data.append((user, item))
             self.sprobability = self.ssize / npair
         # sample and hold
         elif self.sample == 3:
-            logging.info('==> TO DO')
+            print('==> TO DO: Sample and hold strategy is not provided for cardinality estimation')
 
-        return sampled_data
+        return sampled_data, self.sprobability
 
     def frequency_sample(self):
         return 0

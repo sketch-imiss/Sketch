@@ -17,7 +17,7 @@ class DataLoader:
 
         sampler = Sampler(self.dataset, self.sample, self.sprobability, self.ssize)
         if self.estimator == 0:
-            sampled_data = sampler.cardinality_sample()
+            sampled_data, sprobability = sampler.cardinality_sample()
         elif self.estimator == 1:
             sampled_data = sampler.frequency_sample()
         elif self.estimator == 2:
@@ -31,4 +31,4 @@ class DataLoader:
         elif self.estimator == 2:
             partitioned_data = partitioner.persistency_partition()
 
-        return partitioned_data
+        return partitioned_data, sprobability

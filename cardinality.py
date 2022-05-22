@@ -1,17 +1,23 @@
 import mmh3
+import ray
 import pickle
-import time
 import math
-import logging
+
+# start ray
+ray.init()
 
 
 class Cardinality:
-    def __init__(self, dataset, sk_size, bucket_type, output):
-        self.dataset = dataset
+    def __init__(self, data, sample, sprobability, partition, sk_size, sk_type, output):
+        self.data = data
+        self.sample = sample
+        self.sprobability = sprobability
+        self.partition = partition
         self.sk_size = sk_size
-        self.bucket_type = bucket_type
+        self.sk_type = sk_type
         self.output = output
 
+    # compute the index and hash value for the register-based estimator
     def geometric_hash(self, input):
         bin_str = '0' * (32 - len(bin(input)[2:])) + bin(input)[2:]
         b = math.ceil(math.log(self.sk_size) / math.log(2))
@@ -24,53 +30,86 @@ class Cardinality:
                 break
         return index, value
 
-    def bit_estimator(self):
+    @ray.remote
+    def bit_estimator(self, data):
         sketch = [0] * self.sk_size
         num_zerobit = self.sk_size
         dict_cardinality = dict()
 
-        with open(self.dataset) as reader:
-            for line in reader:
-                [user, item] = list(map(int, line.strip().split()))
-                index = mmh3.hash(str(user) + '-' + str(item), signed=False) % self.sk_size
-                if user not in dict_cardinality:
-                    dict_cardinality[user] = 0
-                if sketch[index] == 0:
-                    sketch[index] = 1
-                    dict_cardinality[user] += (self.sk_size / num_zerobit)
-                    num_zerobit -= 1
-        reader.close()
+        for pair in data:
+            user, item = pair[0], pair[1]
+            index = mmh3.hash(str(user) + '-' + str(item), signed=False) % self.sk_size
+            if user not in dict_cardinality:
+                dict_cardinality[user] = 0
+            if sketch[index] == 0:
+                sketch[index] = 1
+                dict_cardinality[user] += (self.sk_size / num_zerobit)
+                num_zerobit -= 1
 
-        writer = open(self.output, 'wb')
-        pickle.dump(dict_cardinality, writer)
-        writer.close()
+        return dict_cardinality
 
-    def register_estimator(self):
+    @ray.remote
+    def register_estimator(self, data):
         sketch = [0] * self.sk_size
         dict_cardinality = dict()
         update_prob = 1
 
-        with open(self.dataset) as reader:
-            for line in reader:
-                [user, item] = list(map(int, line.strip().split()))
-                if user not in dict_cardinality:
-                    dict_cardinality[user] = 0
-                input = mmh3.hash(str(user) + '-' + str(item), signed=False)
-                index, value = self.geometric_hash(input)
-                if value > sketch[index]:
-                    dict_cardinality[user] += (1 / update_prob)
-                    update_prob += ((2 ** (-value) - 2 ** (-sketch[index])) / self.sk_size)
-                    sketch[index] = value
-        reader.close()
+        for pair in data:
+            user, item = pair[0], pair[1]
+            if user not in dict_cardinality:
+                dict_cardinality[user] = 0
+            input = mmh3.hash(str(user) + '-' + str(item), signed=False)
+            index, value = self.geometric_hash(input)
+            if value > sketch[index]:
+                dict_cardinality[user] += (1 / update_prob)
+                update_prob += ((2 ** (-value) - 2 ** (-sketch[index])) / self.sk_size)
+                sketch[index] = value
 
-        writer = open(self.output, 'wb')
-        pickle.dump(dict_cardinality, writer)
-        writer.close()
+        return dict_cardinality
+
+    def aggregator(self, result):
+        if self.partition == 0:
+            dict_result = result
+        elif self.partition == 1:
+            dict_result = dict()
+            for dic in result:
+                for key in dic:
+                    if key not in dict_result:
+                        dict_result[key] = 0
+                    dict_result[key] += dic[key]
+
+        if self.sample == 0:
+            return dict_result
+        elif self.sample == 1:
+            for key in dict_result:
+                dict_result[key] /= self.sprobability
+
+        return dict_result
 
     def run(self):
-        if self.bucket_type == 'bit':
-            self.bit_estimator()
-        elif self.bucket_type == 'register':
-            self.register_estimator()
+        if self.sk_type == 0:
+            if self.partition == 0:
+                result = self.bit_estimator(self.data)
+            elif self.partition == 1:
+                tmp = list()
+                for i in range(len(self.data)):
+                    dict_cardinality = self.bit_estimator.remote(self.data[i])
+                    tmp.append(dict_cardinality)
+                result = ray.get(tmp)
+        elif self.sk_type == 1:
+            if self.partition == 0:
+                result = self.register_estimator(self.data)
+            elif self.partition == 1:
+                tmp = list()
+                for i in range(len(self.data)):
+                    dict_cardinality = self.register_estimator.remote(self.data[i])
+                    tmp.append(dict_cardinality)
+                result = ray.get(tmp)
         else:
-            logging.error('Please select the correct bucket type: bit/register')
+            print('Please select the correct bucket type: 0-bit, 1-register')
+
+        dict_result = self.aggregator(result)
+
+        writer = open(self.output, 'wb')
+        pickle.dump(dict_result, writer)
+        writer.close()
