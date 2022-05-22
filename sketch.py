@@ -50,16 +50,17 @@ if __name__ == '__main__':
     args = get_args()
 
     dataloader = DataLoader(args.dataset, args.estimator, args.sample, args.sprobability, args.ssize, args.partition, args.pnodes)
+    data = dataloader.get_data()
 
     print(args.estimator)
-    if args.estimator == 'cardinality':
-        estimator = Cardinality(args.dataset, args.csize, args.ctype, args.output)
+    if args.estimator == 0:
+        estimator = Cardinality(data, args.csize, args.ctype, args.output)
         estimator.run()
-    elif args.estimator == 'frequency':
+    elif args.estimator == 1:
         estimator = Frequency(args.dataset, args.fsize, args.fthreshold, args.fhash, args.frow, args.fcolumn,
                               args.output, args.fastupdate)
         estimator.run()
-    elif args.estimator == 'persistency':
+    elif args.estimator == 2:
         estimator = Persistency(args.dataset, args.psize, args.ptime, args.preversible, args.output)
         estimator.run()
     else:

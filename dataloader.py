@@ -24,3 +24,11 @@ class DataLoader:
             sampled_data = sampler.persistency_sample()
 
         partitioner = Partitioner(sampled_data, self.partition, self.pnodes)
+        if self.estimator == 0:
+            partitioned_data = partitioner.cardinality_partition()
+        elif self.estimator == 1:
+            partitioned_data = partitioner.frequency_partition()
+        elif self.estimator == 2:
+            partitioned_data = partitioner.persistency_partition()
+
+        return partitioned_data
