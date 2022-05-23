@@ -56,10 +56,10 @@ if __name__ == '__main__':
     if args.estimator == 0:
         estimator = Cardinality(data, args.sample, sprobability, args.partition, args.csize, args.ctype, args.output)
         estimator.run()
-    # elif args.estimator == 1:
-    #     estimator = Frequency(data, args.fsize, args.fthreshold, args.fhash, args.frow, args.fcolumn,
-    #                           args.output, args.fastupdate)
-    #     estimator.run()
+    elif args.estimator == 1:
+        estimator = Frequency(data, args.sample, sprobability, args.partition, args.fsize, args.fthreshold, args.fhash,
+                              args.frow, args.fcolumn, args.output, args.fastupdate)
+        estimator.run()
     # elif args.estimator == 2:
     #     estimator = Persistency(data, args.psize, args.ptime, args.preversible, args.output)
     #     estimator.run()

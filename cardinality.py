@@ -3,6 +3,8 @@ import ray
 import pickle
 import math
 
+from utils import *
+
 # start ray
 ray.init()
 
@@ -67,25 +69,6 @@ class Cardinality:
 
         return dict_cardinality
 
-    def aggregator(self, result):
-        if self.partition == 0:
-            dict_result = result
-        elif self.partition == 1:
-            dict_result = dict()
-            for dic in result:
-                for key in dic:
-                    if key not in dict_result:
-                        dict_result[key] = 0
-                    dict_result[key] += dic[key]
-
-        if self.sample == 0:
-            return dict_result
-        elif self.sample == 1:
-            for key in dict_result:
-                dict_result[key] /= self.sprobability
-
-        return dict_result
-
     def run(self):
         # bit-based estimator
         if self.sk_type == 0:
@@ -110,7 +93,7 @@ class Cardinality:
         else:
             print('Please select the correct bucket type: 0-bit, 1-register')
 
-        dict_result = self.aggregator(result)
+        dict_result = aggregator(result, self.partition, self.sample, self.sprobability)
 
         writer = open(self.output, 'wb')
         pickle.dump(dict_result, writer)

@@ -19,9 +19,9 @@ class DataLoader:
         if self.estimator == 0:
             sampled_data, sprobability = sampler.cardinality_sample()
         elif self.estimator == 1:
-            sampled_data = sampler.frequency_sample()
+            sampled_data, sprobability = sampler.frequency_sample()
         elif self.estimator == 2:
-            sampled_data = sampler.persistency_sample()
+            sampled_data, sprobability = sampler.persistency_sample()
 
         partitioner = Partitioner(sampled_data, self.partition, self.pnodes)
         if self.estimator == 0:

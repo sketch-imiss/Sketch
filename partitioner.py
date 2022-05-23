@@ -28,7 +28,25 @@ class Partitioner:
         return partitioned_data
 
     def frequency_partition(self):
-        return 0
+        partitioned_data = [[] for _ in range(self.pnodes)]
+
+        # without partitioning
+        if self.partition == 0:
+            partitioned_data = self.data
+        # random partitioning
+        elif self.partition == 1:
+            nuser = 0
+            for pair in self.data:
+                index = mmh3.hash(str(nuser), signed=False) % self.pnodes
+                partitioned_data[index].append(pair)
+                nuser += 1
+        # hash partitioning
+        elif self.partition == 2:
+            for pair in self.data:
+                index = mmh3.hash(str(pair[0]), signed=False) % self.pnodes
+                partitioned_data[index].append(pair)
+
+        return partitioned_data
 
     def persistency_partition(self):
         return 0
