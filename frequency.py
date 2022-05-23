@@ -1,4 +1,3 @@
-import logging
 import pickle
 import mmh3
 import random
