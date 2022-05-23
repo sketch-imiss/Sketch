@@ -87,6 +87,7 @@ class Cardinality:
         return dict_result
 
     def run(self):
+        # bit-based estimator
         if self.sk_type == 0:
             if self.partition == 0:
                 result = self.bit_estimator(self.data)
@@ -96,6 +97,7 @@ class Cardinality:
                     dict_cardinality = self.bit_estimator.remote(self.data[i])
                     tmp.append(dict_cardinality)
                 result = ray.get(tmp)
+        # register-based estimator
         elif self.sk_type == 1:
             if self.partition == 0:
                 result = self.register_estimator(self.data)
