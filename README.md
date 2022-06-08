@@ -1,12 +1,12 @@
-## A Python Library for Monitoring Large-Scale Data Streams
+## A Python Library for Monitoring High-speed Network Traffic
 
 ![version](https://img.shields.io/badge/version-v1-green)
 ![python](https://img.shields.io/badge/python-3.9-blue)
 ![ray](https://img.shields.io/badge/ray-1.12.1-orange)
 
-This repository contains our Python implementation of sketch methods for monitoring large-scale data streams. 
+This repository contains our Python implementation of sketch methods for monitoring high-speed network traffic. 
 
-Monitoring data streams is a fundamental but important task in the fields of network security and management, which 
+Monitoring high-speed network traffic is a fundamental but important task in the fields of network security and management, which 
 helps network administrators to better understand the runtime status by measuring a variety of metrics such as 
 cardinality, frequency and persistency. Due to limited computational and memory resources, it becomes impractical to 
 exactly compute metrics. Sketch is an effective and efficient data structure for network monitoring, which utilizes a 
