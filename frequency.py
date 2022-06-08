@@ -5,7 +5,7 @@ import math
 from scipy.stats import beta
 import ray
 
-from utils import *
+from aggregator import *
 
 
 # start ray

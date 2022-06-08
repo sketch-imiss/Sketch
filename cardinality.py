@@ -3,7 +3,7 @@ import ray
 import pickle
 import math
 
-from utils import *
+from aggregator import *
 
 # start ray
 ray.init()
