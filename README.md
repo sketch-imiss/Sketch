@@ -10,9 +10,9 @@ Monitoring high-speed network traffic is a fundamental but important task in the
 helps network administrators to better understand the runtime status by measuring a variety of metrics such as 
 cardinality, frequency and persistency. Due to limited computational and memory resources, it becomes impractical to 
 exactly compute metrics. Sketch is an effective and efficient data structure for network monitoring, which utilizes a 
-family of hash functions to embed raw dataset into a compact structure. Sketch keeps a trade-off among accuracy, 
+family of hash functions to embed the raw dataset into a compact structure. Sketch keeps a trade-off among accuracy, 
 computational costs, and memory usage. However, existing sketch methods still suffer from the problems of low accuracy, 
-low time and memory complexities.
+high time and memory complexities.
 
 In this repository, we select three representative metrics, namely cardinality, frequency, and persistency, and develop
 fast and accurate sketch structures for estimations.
