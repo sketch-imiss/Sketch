@@ -47,6 +47,7 @@ This repository provides two partitioning strategies:
 * Python >= 3.9
 * Ray >= 1.12.1
 
+<!--
 ### Citation
 
 If you use our code, please cite:
@@ -75,3 +76,4 @@ Pinghui Wang, Peng Jia, Jing Tao, and Xiaohong Guan. Mining Long-Term Stealthy U
 ### Contact
 
 For more details, you can drop us an [email](pengjiapp@gmail.com).
+-->
