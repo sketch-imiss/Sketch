@@ -47,6 +47,10 @@ This repository provides two partitioning strategies:
 * Python >= 3.9
 * Ray >= 1.12.1
 
+### Note
+
+The part of persistency estimation is being rebuilt, we will upload it soon.
+
 <!--
 ### Citation
 
