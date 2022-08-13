@@ -51,7 +51,6 @@ This repository provides two partitioning strategies:
 
 The part of persistency estimation is being rebuilt, we will upload it soon.
 
-<!--
 ### Citation
 
 If you use our code, please cite:
@@ -80,4 +79,3 @@ Pinghui Wang, Peng Jia, Jing Tao, and Xiaohong Guan. Mining Long-Term Stealthy U
 ### Contact
 
 For more details, you can drop us an [email](pengjiapp@gmail.com).
--->
